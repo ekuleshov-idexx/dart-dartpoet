@@ -6,21 +6,16 @@ class MetaSpec implements Spec {
   String instanceName;
   bool isInstance = false;
 
-  MetaSpec.ofInstance(String instanceName) {
-    this.instanceName = instanceName;
-    this.isInstance = true;
-  }
+  MetaSpec.ofInstance(this.instanceName) : isInstance = true;
 
-  MetaSpec.ofConstructor(TypeToken type, {List<ParameterSpec> parameters}) {
-    this.isInstance = false;
-    this.typeToken = type;
-    this.parameters = parameters ?? [];
-  }
+  MetaSpec.ofConstructor(this.typeToken, {List<ParameterSpec> parameters})
+    : isInstance = false,
+      parameters = parameters ?? [];
 
   @override
   String code({Map<String, dynamic> args = const {}}) {
     if (isInstance) {
-      return "@$instanceName";
+      return '@$instanceName';
     } else {
       var list = parameters.where((o) => o.isValue).toList();
       list.sort((o1, o2) => o1.parameterMode.index - o2.parameterMode.index);

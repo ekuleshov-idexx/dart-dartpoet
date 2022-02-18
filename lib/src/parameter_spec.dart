@@ -14,18 +14,14 @@ class ParameterSpec<T> implements Spec {
   ParameterSpec.build(
     this.parameterName, {
     this.type,
-    this.metas,
+    this.metas = const [],
     this.parameterMode = ParameterMode.normal,
     this.defaultValue,
     this.isSelfParameter = false,
-    this.isValue,
+    this.isValue = false,
     this.value,
-    this.valueString,
-  }) {
-    if (metas == null) metas = [];
-    this.isValue = isValue ?? false;
-    this.valueString = valueString ?? true;
-  }
+    this.valueString = true,
+  });
 
   ParameterSpec.normal(
     String parameterName, {
@@ -92,21 +88,21 @@ class ParameterSpec<T> implements Spec {
     return type == null ? 'dynamic' : type.fullTypeName;
   }
 
-  String _valueString(dynamic v) => v is String && valueString ? '"$v"' : "$v";
+  String _valueString(dynamic v) => v is String && valueString ? '"$v"' : '$v';
 
   @override
   String code({Map<String, dynamic> args = const {}}) {
     String raw;
     if (isValue) {
-      raw = parameterMode == ParameterMode.named ? "$parameterName: ${_valueString(value)}" : "${_valueString(value)}";
+      raw = parameterMode == ParameterMode.named ? '$parameterName: ${_valueString(value)}' : '${_valueString(value)}';
     } else {
       bool withDefValue = args[KEY_WITH_DEF_VALUE] ?? false;
       if (isSelfParameter) {
-        raw = "this.$parameterName";
+        raw = 'this.$parameterName';
       } else {
-        raw = "";
-        if (metas.isNotEmpty) raw += "${collectMetas(metas)} ";
-        raw += "${_getType()} $parameterName";
+        raw = '';
+        if (metas.isNotEmpty) raw += '${collectMetas(metas)} ';
+        raw += '${_getType()} $parameterName';
       }
       if (withDefValue && defaultValue != null) raw += '=$defaultValue';
     }
@@ -120,11 +116,12 @@ String collectParameters(List<ParameterSpec> parameters) {
   var namedList = parameters.where((o) => o.parameterMode == ParameterMode.named);
   var indexedList = parameters.where((o) => o.parameterMode == ParameterMode.indexed);
   List<String> paramsList = [];
-  if (normalList.isNotEmpty) paramsList.add(normalList.map((o) => o.code()).join(", "));
-  if (namedList.isNotEmpty) paramsList.add('{' + namedList.map((o) => o.code(args: {KEY_WITH_DEF_VALUE: true})).join(", ") + '}');
-  if (indexedList.isNotEmpty)
-    paramsList.add('[' + indexedList.map((o) => o.code(args: {KEY_WITH_DEF_VALUE: true})).join(", ") + ']');
-  return paramsList.join(", ");
+  if (normalList.isNotEmpty) paramsList.add(normalList.map((o) => o.code()).join(', '));
+  if (namedList.isNotEmpty) paramsList.add('{' + namedList.map((o) => o.code(args: {KEY_WITH_DEF_VALUE: true})).join(', ') + '}');
+  if (indexedList.isNotEmpty) {
+    paramsList.add('[' + indexedList.map((o) => o.code(args: {KEY_WITH_DEF_VALUE: true})).join(', ') + ']');
+  }
+  return paramsList.join(', ');
 }
 
 enum ParameterMode { normal, indexed, named }

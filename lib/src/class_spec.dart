@@ -62,10 +62,10 @@ class ClassSpec implements Spec {
   @override
   String code({Map<String, dynamic> args = const {}}) {
     StringBuffer inner = StringBuffer();
-    if (isAbstract) inner.write("abstract ");
+    if (isAbstract) inner.write('abstract ');
     inner.write('class $className');
     if (hasGeneric) inner.write("<${generics.map((o) => o.fullTypeName).join(", ")}>");
-    if (superClass != null) inner.write(' extends ${superClass}');
+    if (superClass != null) inner.write(' extends $superClass');
     if (implementClasses.isNotEmpty) inner.write(' implements ${implementClasses.map((o) => o).join(', ')}');
     if (mixinClasses.isNotEmpty) inner.write(' with ${mixinClasses.join(', ')}');
     inner.writeln(' {');
@@ -217,7 +217,7 @@ class ConstructorSpec implements Spec {
 }
 
 String collectConstructors(List<ConstructorSpec> constructors) {
-  return constructors.map((o) => o.code()).join("\n");
+  return constructors.map((o) => o.code()).join('\n');
 }
 
 enum ConstructorMode { normal, factory, named, namedFactory }

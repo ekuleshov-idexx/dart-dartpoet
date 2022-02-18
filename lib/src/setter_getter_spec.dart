@@ -27,7 +27,7 @@ class GetterSpec implements Spec {
 }
 
 String collectGetters(List<GetterSpec> getters) {
-  return getters.map((o) => o.code()).join("\n");
+  return getters.map((o) => o.code()).join('\n');
 }
 
 class SetterSpec implements Spec {
@@ -52,5 +52,5 @@ class SetterSpec implements Spec {
 }
 
 String collectSetters(List<SetterSpec> setters) {
-  return setters.map((o) => o.code()).join("\n");
+  return setters.map((o) => o.code()).join('\n');
 }

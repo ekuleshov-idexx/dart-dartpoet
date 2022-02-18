@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dartpoet/dartpoet.dart';
-import 'package:xfile/xfile.dart';
 
 class DartFile {
   FileSpec fileSpec;
@@ -16,7 +15,12 @@ class DartFile {
 
   String outputContent() => _content;
 
-  Future<File> outputFileAsync(String path) => XFile.fromPath(path).file.writeAsString(outputContent());
+  // Future<File> outputFileAsync(String path) => XFile.fromPath(path).file.writeAsString(outputContent());
+  Future<File> outputFileAsync(String path) async {
+    final file = File(path);
+    return file.writeAsString(outputContent());
+  }
 
-  File outputSync(String path) => XFile.fromPath(path).file..writeAsStringSync(outputContent());
+  // File outputSync(String path) => XFile.fromPath(path).file..writeAsStringSync(outputContent());
+  File outputSync(String path) => File(path)..writeAsStringSync(outputContent());
 }

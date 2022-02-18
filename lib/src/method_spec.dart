@@ -68,7 +68,7 @@ class MethodSpec implements Spec {
 }
 
 String collectMethods(List<MethodSpec> methods) {
-  return methods.map((o) => o.code()).join("\n\n");
+  return methods.map((o) => o.code()).join('\n\n');
 }
 
 enum AsynchronousMode {

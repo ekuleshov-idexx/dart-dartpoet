@@ -1,6 +1,6 @@
 import 'package:dartpoet/dartpoet.dart';
 
-main() {
+void main() {
   // define a file spec
   FileSpec fileSpec = FileSpec.build(
     dependencies: [
@@ -12,8 +12,8 @@ main() {
         'globalFunc1', // define parameters in this method
         parameters: [
           ParameterSpec.normal('param1', type: TypeToken.ofInt(), metas: [
-            MetaSpec.ofInstance("override"),
-            MetaSpec.ofInstance("override2"),
+            MetaSpec.ofInstance('override'),
+            MetaSpec.ofInstance('override2'),
           ]),
         ], // define code block spec in this method
         codeBlock: CodeBlockSpec.line('print(\'hello world!\');'),
@@ -40,11 +40,11 @@ main() {
       ClassSpec.build(
         'HelloWorld',
         metas: [
-          MetaSpec.ofConstructor(TypeToken.ofName("Object")),
-          MetaSpec.ofInstance("deprecated"),
-          MetaSpec.ofConstructor(TypeToken.ofName("JsonKey"), parameters: [
-            ParameterSpec.named("ignored", isValue: true, value: false),
-            ParameterSpec.normal("p1", isValue: true, value: "aa1234"),
+          MetaSpec.ofConstructor(TypeToken.ofName('Object')),
+          MetaSpec.ofInstance('deprecated'),
+          MetaSpec.ofConstructor(TypeToken.ofName('JsonKey'), parameters: [
+            ParameterSpec.named('ignored', isValue: true, value: false),
+            ParameterSpec.normal('p1', isValue: true, value: 'aa1234'),
           ]),
         ],
         doc: DocSpec.text('hello! world!.'),
@@ -72,7 +72,7 @@ main() {
   );
 
   // define a dart file
-  DartFile dartFile = DartFile.fromFileSpec(fileSpec);
+  var dartFile = DartFile.fromFileSpec(fileSpec);
   // output file content
   print(dartFile.outputContent());
   dartFile.outputSync('./example/example_output.dart');
