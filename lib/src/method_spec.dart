@@ -1,36 +1,36 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class MethodSpec implements Spec {
-  DocSpec doc;
-  String methodName;
-  List<MetaSpec> metas = [];
-  List<ParameterSpec> parameters = [];
-  TypeToken returnType;
-  CodeBlockSpec codeBlock;
-  bool isStatic;
-  bool isFactory;
-  bool isAbstract;
-  List<TypeToken> generics = [];
+  final DocSpec? doc;
+  final String methodName;
+  final List<MetaSpec> metas;
+  final List<ParameterSpec> parameters;
+  final TypeToken? returnType;
+  final CodeBlockSpec? codeBlock;
+  final bool isStatic;
+  final bool isFactory;
+  final bool isAbstract;
+  final List<TypeToken> generics;
+  final AsynchronousMode asynchronousMode;
+
   bool get hasGeneric => generics.isNotEmpty;
-  AsynchronousMode asynchronousMode;
 
   MethodSpec.build(
     this.methodName, {
     this.doc,
-    this.metas,
-    this.parameters,
+    List<MetaSpec>? metas,
+    List<ParameterSpec>? parameters,
     this.returnType,
     this.codeBlock,
     this.isStatic = false,
     this.isFactory = false,
     this.isAbstract = false,
     this.asynchronousMode = AsynchronousMode.none,
-    this.generics,
-  }) {
-    if (metas == null) metas = [];
-    if (parameters == null) parameters = [];
-    if (generics == null) generics = [];
-  }
+    List<TypeToken>? generics,
+  })
+      : this.metas = metas ?? [],
+        this.parameters = parameters ?? [],
+        this.generics = generics ?? [];
 
   @override
   String code({Map<String, dynamic> args = const {}}) {
@@ -38,9 +38,9 @@ class MethodSpec implements Spec {
     var elements = [];
     if (isFactory) elements.add('factory');
     if (isStatic) elements.add('static');
-    if (returnType != null) elements.add(returnType.fullTypeName);
+    if (returnType != null) elements.add(returnType!.fullTypeName);
     elements.add(methodName);
-    if (hasGeneric) elements.add("<${generics.join(", ")}>");
+    if (hasGeneric) elements.add('<${generics.join(", ")}>');
     raw += elements.join(' ');
     raw += '(${collectParameters(parameters)})';
     if (isAbstract) {

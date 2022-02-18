@@ -1,31 +1,31 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class ClassSpec implements Spec {
-  DocSpec doc;
+  final DocSpec? doc;
 
-  List<MetaSpec> metas = [];
+  final List<MetaSpec> metas;
 
-  List<GetterSpec> getters = [];
+  final List<GetterSpec> getters;
 
-  List<SetterSpec> setters = [];
+  final List<SetterSpec> setters;
 
-  List<MethodSpec> methods = [];
+  final List<MethodSpec> methods;
 
-  List<ConstructorSpec> constructors = [];
+  final List<ConstructorSpec> constructors = [];
 
-  List<PropertySpec> properties = [];
+  final List<PropertySpec> properties;
 
-  List<OperatorSpec> operatorMethods = [];
+  final List<OperatorSpec> operatorMethods;
 
-  String className;
+  final String className;
 
-  TypeToken superClass;
+  final TypeToken? superClass;
 
-  List<TypeToken> implementClasses = [];
+  final List<TypeToken> implementClasses;
 
-  List<TypeToken> mixinClasses = [];
+  final List<TypeToken> mixinClasses;
 
-  List<TypeToken> generics = [];
+  final List<TypeToken> generics;
 
   bool get hasGeneric => generics.isNotEmpty;
 
@@ -34,29 +34,30 @@ class ClassSpec implements Spec {
   ClassSpec.build(
     this.className, {
     this.doc,
-    this.metas,
-    this.properties,
-    this.getters,
-    this.setters,
-    this.methods,
+    List<MetaSpec>? metas,
+    List<PropertySpec>? properties,
+    List<GetterSpec>? getters,
+    List<SetterSpec>? setters,
+    List<MethodSpec>? methods,
     this.superClass,
-    this.implementClasses,
-    this.mixinClasses,
-    this.generics,
-    this.operatorMethods,
+    List<TypeToken>? implementClasses,
+    List<TypeToken>? mixinClasses,
+    List<TypeToken>? generics,
+    List<OperatorSpec>? operatorMethods,
     this.isAbstract = false,
-    Iterable<ConstructorSpec> Function(ClassSpec owner) constructorBuilder,
-  }) {
+    Iterable<ConstructorSpec> Function(ClassSpec owner)? constructorBuilder,
+  })
+    : this.metas = metas ?? [],
+      this.properties = properties ?? [],
+      this.getters = getters ?? [],
+      this.setters = setters ?? [],
+      this.methods = methods ?? [],
+      this.implementClasses = implementClasses ?? [],
+      this.mixinClasses = mixinClasses ?? [],
+      this.generics = generics ?? [],
+      this.operatorMethods = operatorMethods ?? []
+  {
     if (constructorBuilder != null) constructors.addAll(constructorBuilder(this));
-    if (metas == null) metas = [];
-    if (properties == null) properties = [];
-    if (getters == null) getters = [];
-    if (setters == null) setters = [];
-    if (methods == null) methods = [];
-    if (implementClasses == null) implementClasses = [];
-    if (mixinClasses == null) mixinClasses = [];
-    if (generics == null) generics = [];
-    if (operatorMethods == null) operatorMethods = [];
   }
 
   @override
@@ -96,40 +97,38 @@ String collectClasses(List<ClassSpec> classes) {
 }
 
 class ConstructorSpec implements Spec {
-  DocSpec doc;
+  final DocSpec? doc;
 
-  ClassSpec owner;
+  final ClassSpec owner;
 
-  ConstructorMode mode;
+  final ConstructorMode mode;
 
-  List<ParameterSpec> parameters = [];
+  final List<ParameterSpec> parameters;
 
-  CodeBlockSpec codeBlock;
+  final CodeBlockSpec? codeBlock;
 
-  String inherit;
+  final String? inherit;
 
-  String name;
+  final String? name;
 
 //todo initializer list
 
   ConstructorSpec.build(
     this.owner, {
     this.doc,
-    this.mode,
-    this.parameters,
+    required this.mode,
+    this.parameters = const [],
     this.codeBlock,
     this.inherit,
     this.name,
-  }) {
-    if (parameters == null) parameters = [];
-  }
+  });
 
   ConstructorSpec.normal(
     ClassSpec owner, {
     List<ParameterSpec> parameters = const [],
-    CodeBlockSpec codeBlock,
-    String inherit,
-    DocSpec doc,
+    CodeBlockSpec? codeBlock,
+    String? inherit,
+    DocSpec? doc,
   }) : this.build(
           owner,
           parameters: parameters,
@@ -143,9 +142,9 @@ class ConstructorSpec implements Spec {
     ClassSpec owner,
     String name, {
     List<ParameterSpec> parameters = const [],
-    CodeBlockSpec codeBlock,
-    String inherit,
-    DocSpec doc,
+    CodeBlockSpec? codeBlock,
+    String? inherit,
+    DocSpec? doc,
   }) : this.build(
           owner,
           parameters: parameters,
@@ -159,9 +158,9 @@ class ConstructorSpec implements Spec {
   ConstructorSpec.factory(
     ClassSpec owner, {
     List<ParameterSpec> parameters = const [],
-    CodeBlockSpec codeBlock,
-    String inherit,
-    DocSpec doc,
+    CodeBlockSpec? codeBlock,
+    String? inherit,
+    DocSpec? doc,
   }) : this.build(
           owner,
           parameters: parameters,
@@ -175,9 +174,9 @@ class ConstructorSpec implements Spec {
     ClassSpec owner,
     String name, {
     List<ParameterSpec> parameters = const [],
-    CodeBlockSpec codeBlock,
-    String inherit,
-    DocSpec doc,
+    CodeBlockSpec? codeBlock,
+    String? inherit,
+    DocSpec? doc,
   }) : this.build(
           owner,
           parameters: parameters,

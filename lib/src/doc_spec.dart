@@ -1,7 +1,7 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class DocSpec implements Spec {
-  String content;
+  final String content;
 
   DocSpec.text(this.content);
 
@@ -11,7 +11,7 @@ class DocSpec implements Spec {
   }
 }
 
-String collectWithDoc(DocSpec doc, String raw) {
+String collectWithDoc(DocSpec? doc, String raw) {
   if (doc == null) return raw;
   return '${doc.code()}\n$raw';
 }

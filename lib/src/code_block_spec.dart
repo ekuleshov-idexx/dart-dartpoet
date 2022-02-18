@@ -1,15 +1,13 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class CodeBlockSpec implements Spec {
-  List<String> statements = [];
+  final List<String> statements;
 
   bool get singleLine => statements.join('\n').split('\n').length == 1;
 
-  CodeBlockSpec.empty();
+  CodeBlockSpec.empty() : this.statements = [];
 
-  CodeBlockSpec.lines(this.statements) {
-    if (statements == null) statements = [];
-  }
+  CodeBlockSpec.lines(this.statements);
 
   CodeBlockSpec.line(String line) : this.lines([line]);
 
@@ -38,7 +36,7 @@ class CodeBlockSpec implements Spec {
 enum CodeBlockEmptiedCollectingMode { nothing, emptyBlock, end }
 
 String collectCodeBlock(
-  CodeBlockSpec codeBlock, {
+  CodeBlockSpec? codeBlock, {
   bool withLambda = true,
   bool withBlock = true,
   CodeBlockEmptiedCollectingMode collectingMode = CodeBlockEmptiedCollectingMode.end,

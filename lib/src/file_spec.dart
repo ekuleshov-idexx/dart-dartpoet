@@ -1,23 +1,31 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class FileSpec implements Spec {
-  List<DependencySpec> dependencies = [];
-  List<ClassSpec> classes = [];
-  List<PropertySpec> properties = [];
-  List<GetterSpec> getters = [];
-  List<SetterSpec> setters = [];
-  List<CodeBlockSpec> codeBlocks = [];
-  List<MethodSpec> methods = [];
+  final List<DependencySpec> dependencies;
+  final List<ClassSpec> classes;
+  final List<PropertySpec> properties;
+  final List<GetterSpec> getters;
+  final List<SetterSpec> setters;
+  final List<CodeBlockSpec> codeBlocks;
+  final List<MethodSpec> methods;
 
   FileSpec.build({
-    this.methods,
-    this.classes,
-    this.properties,
-    this.getters,
-    this.setters,
-    this.codeBlocks,
-    this.dependencies,
-  }) {
+    List<MethodSpec>? methods,
+    List<ClassSpec>? classes,
+    List<PropertySpec>? properties,
+    List<GetterSpec>? getters,
+    List<SetterSpec>? setters,
+    List<CodeBlockSpec>? codeBlocks,
+    List<DependencySpec>? dependencies,
+  }) :
+    this.methods = methods ?? [],
+    this.classes = classes ?? [],
+    this.properties = properties ?? [],
+    this.getters = getters ?? [],
+    this.setters = setters ?? [],
+    this.codeBlocks = codeBlocks ?? [],
+    this.dependencies = dependencies ?? []
+  {
     if (methods == null) methods = [];
     if (classes == null) classes = [];
     if (properties == null) properties = [];
@@ -30,7 +38,11 @@ class FileSpec implements Spec {
   @override
   String code({Map<String, dynamic> args = const {}}) {
     bool reverseClasses = args[KEY_REVERSE_CLASSES] ?? false;
-    if (reverseClasses) classes = classes.reversed.toList();
+    if (reverseClasses) {
+      List<ClassSpec> reversed = classes.reversed.toList();
+      classes.clear();
+      classes.addAll(reversed);
+    }
     StringBuffer inner = StringBuffer();
     String dependenciesBlock = collectDependencies(dependencies);
     String classesBlock = collectClasses(classes);

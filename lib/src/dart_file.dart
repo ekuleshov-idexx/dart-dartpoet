@@ -3,15 +3,13 @@ import 'dart:io';
 import 'package:dartpoet/dartpoet.dart';
 
 class DartFile {
-  FileSpec fileSpec;
+  final FileSpec fileSpec;
 
-  String get _content => format(fileSpec?.code(args: {KEY_REVERSE_CLASSES: true}));
+  String get _content => format(fileSpec.code(args: {KEY_REVERSE_CLASSES: true}));
 
-  DartFile.empty();
+  DartFile.empty() : fileSpec = FileSpec.build();
 
-  DartFile.fromFileSpec(FileSpec fileSpec) {
-    this.fileSpec = fileSpec;
-  }
+  DartFile.fromFileSpec(this.fileSpec);
 
   String outputContent() => _content;
 

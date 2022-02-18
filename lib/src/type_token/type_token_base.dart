@@ -1,61 +1,71 @@
 class TypeToken {
   final String _typeName;
   final List<TypeToken> _generics;
+  final bool _isNullable;
 
-  TypeToken.ofName(this._typeName, [this._generics = const []]);
+  TypeToken.ofName(this._typeName, [this._generics = const [], this._isNullable = false ]);
 
-  TypeToken.ofName2(String typeName, [List<Type> generics = const []])
-      : this.ofName(typeName, generics.map((o) => TypeToken.of(o)).toList());
+  TypeToken.ofName2(String typeName, [List<Type> generics = const [], bool? isNullable ])
+      : this.ofName(typeName, generics.map((o) => TypeToken.of(o)).toList(), isNullable ?? false);
 
-  factory TypeToken.ofFullName(String fullTypeName) {
+  factory TypeToken.ofFullName(String fullTypeName, [ bool? isNullable ]) {
+    if(fullTypeName.endsWith('?')) {
+      isNullable = true;
+      fullTypeName = fullTypeName.substring(0, fullTypeName.length - 1);
+    }
+
     String typeName = resolveTypeName(fullTypeName);
     List<TypeToken> generics = resolveGenerics(fullTypeName).toList();
-    return TypeToken.ofName(typeName, generics);
+    return TypeToken.ofName(typeName, generics, isNullable ?? false);
   }
 
-  factory TypeToken.parse(Object obj) => TypeToken.of(obj?.runtimeType);
+  factory TypeToken.parse(Object obj, [ bool? isNullable ]) => TypeToken.of(obj.runtimeType, isNullable);
 
-  factory TypeToken.of(Type type) => TypeToken.ofFullName(type.toString());
+  factory TypeToken.of(Type type, [ bool? isNullable ]) => TypeToken.ofFullName(type.toString(), isNullable);
 
-  factory TypeToken.ofDynamic() => TypeToken.of(dynamic);
+  factory TypeToken.ofDynamic([ bool? isNullable ]) => TypeToken.of(dynamic, isNullable);
 
-  factory TypeToken.ofInt() => TypeToken.of(int);
+  factory TypeToken.ofInt([ bool? isNullable ]) => TypeToken.of(int, isNullable);
 
-  factory TypeToken.ofString() => TypeToken.of(String);
+  factory TypeToken.ofString([ bool? isNullable ]) => TypeToken.of(String, isNullable);
 
-  factory TypeToken.ofDouble() => TypeToken.of(double);
+  factory TypeToken.ofDouble([ bool? isNullable ]) => TypeToken.of(double, isNullable);
 
-  factory TypeToken.ofBool() => TypeToken.of(bool);
+  factory TypeToken.ofBool([ bool? isNullable ]) => TypeToken.of(bool, isNullable);
 
   factory TypeToken.ofVoid() => TypeToken.ofName('void');
 
-  static TypeToken ofListByToken(TypeToken componentType) {
-    return TypeToken.ofName('List', [componentType]);
+  static TypeToken ofListByToken(TypeToken componentType, [ bool? isNullable ]) {
+    return TypeToken.ofName('List', [componentType], isNullable ?? false);
   }
 
-  static TypeToken ofListByType(Type componentType) {
-    return TypeToken.ofListByToken(TypeToken.of(componentType));
+  static TypeToken ofListByType(Type componentType, [ bool? isNullable ]) {
+    return TypeToken.ofListByToken(TypeToken.of(componentType), isNullable);
   }
 
-  static TypeToken ofMapByToken(TypeToken keyType, TypeToken valueType) {
-    return TypeToken.ofName('Map', [keyType, valueType]);
+  static TypeToken ofMapByToken(TypeToken keyType, TypeToken valueType, [ bool? isNullable ]) {
+    return TypeToken.ofName('Map', [keyType, valueType], isNullable ?? false);
   }
 
-  static TypeToken ofMapByType(Type keyType, Type valueType) {
-    return TypeToken.ofMapByToken(TypeToken.of(keyType), TypeToken.of(valueType));
+  static TypeToken ofMapByType(Type keyType, Type valueType, [ bool? isNullable ]) {
+    return TypeToken.ofMapByToken(TypeToken.of(keyType), TypeToken.of(valueType), isNullable);
   }
 
-  static TypeToken ofList<T>() {
-    return ofListByToken(TypeToken.of(T));
+  static TypeToken ofList<T>([ bool? isNullable ]) {
+    return ofListByToken(TypeToken.of(T, isNullable));
   }
 
-  static TypeToken ofMap<K, V>() {
-    return ofMapByToken(TypeToken.of(K), TypeToken.of(V));
+  static TypeToken ofMap<K, V>([ bool? isNullable ]) {
+    return ofMapByToken(TypeToken.of(K), TypeToken.of(V), isNullable);
   }
 
   String get typeName => _typeName;
 
-  String get fullTypeName => typeName + (generics.isNotEmpty ? "<${generics.join(", ")}>" : '');
+  bool get isNullable => _isNullable;
+
+  String get fullTypeName => typeName
+      + (generics.isNotEmpty ? '<${generics.join(", ")}>' : '')
+      + (_isNullable ? '?' : '');
 
   bool get isPrimitive => ['int', 'double', 'bool', 'String'].contains(typeName);
 
@@ -133,14 +143,14 @@ bool isMap(Type type) => TypeToken.of(type).isMap;
 
 String resolveTypeName(String fullTypeName) {
   var regex = RegExp('([a-zA-Z0-9\$_]+)(<((.+))>)?');
-  return regex.firstMatch(fullTypeName).group(1);
+  return regex.firstMatch(fullTypeName)!.group(1)!;
 }
 
 Iterable<TypeToken> resolveGenerics(String fullTypeName) sync* {
-  String fullGeneric = _getGenericsString(fullTypeName);
+  String? fullGeneric = _getGenericsString(fullTypeName);
   List<String> genericStrings = _splitGenerics(fullGeneric).toList();
   for (var genericString in genericStrings) {
-    String childGenericString = _getGenericsString(genericString);
+    String? childGenericString = _getGenericsString(genericString);
     if (childGenericString == null) {
       yield TypeToken.ofName(genericString);
     } else {
@@ -149,16 +159,16 @@ Iterable<TypeToken> resolveGenerics(String fullTypeName) sync* {
   }
 }
 
-String _getGenericsString(String typeName) {
+String? _getGenericsString(String typeName) {
   var regex = RegExp('[a-zA-Z0-9\$_]+<((.+))>');
   if (regex.hasMatch(typeName)) {
-    return regex.firstMatch(typeName).group(1);
+    return regex.firstMatch(typeName)!.group(1);
   } else {
     return null;
   }
 }
 
-Iterable<String> _splitGenerics(String genericsString) sync* {
+Iterable<String> _splitGenerics(String? genericsString) sync* {
   if (genericsString == null) {
     yield* [];
   } else {

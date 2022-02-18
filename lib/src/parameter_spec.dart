@@ -1,36 +1,36 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class ParameterSpec<T> implements Spec {
-  TypeToken type;
-  String parameterName;
-  ParameterMode parameterMode;
-  T defaultValue;
-  List<MetaSpec> metas = [];
-  bool isSelfParameter = false;
-  bool isValue = false;
-  dynamic value;
-  bool valueString = true;
+  final TypeToken? type;
+  final String parameterName;
+  final ParameterMode parameterMode;
+  final T? defaultValue;
+  final List<MetaSpec> metas;
+  final bool isSelfParameter;
+  final bool isValue;
+  final dynamic value;
+  final bool valueString;
 
   ParameterSpec.build(
     this.parameterName, {
     this.type,
-    this.metas = const [],
+    List<MetaSpec>? metas,
     this.parameterMode = ParameterMode.normal,
     this.defaultValue,
     this.isSelfParameter = false,
     this.isValue = false,
     this.value,
     this.valueString = true,
-  });
+  }) : this.metas = metas ?? const [];
 
   ParameterSpec.normal(
     String parameterName, {
     bool isSelfParameter = false,
-    TypeToken type,
-    List<MetaSpec> metas,
-    bool isValue,
+    TypeToken? type,
+    List<MetaSpec>? metas,
+    bool isValue = false,
     dynamic value,
-    bool valueString,
+    bool valueString = true,
   }) : this.build(
           parameterName,
           type: type,
@@ -45,12 +45,12 @@ class ParameterSpec<T> implements Spec {
   ParameterSpec.named(
     String parameterName, {
     bool isSelfParameter = false,
-    TypeToken type,
-    T defaultValue,
-    List<MetaSpec> metas,
-    bool isValue,
+    TypeToken? type,
+    T? defaultValue,
+    List<MetaSpec>? metas,
+    bool isValue = false,
     dynamic value,
-    bool valueString,
+    bool valueString = true,
   }) : this.build(
           parameterName,
           type: type,
@@ -66,12 +66,12 @@ class ParameterSpec<T> implements Spec {
   ParameterSpec.indexed(
     String parameterName, {
     bool isSelfParameter = false,
-    TypeToken type,
-    T defaultValue,
-    List<MetaSpec> metas,
-    bool isValue,
+    TypeToken? type,
+    T? defaultValue,
+    List<MetaSpec>? metas,
+    bool isValue = false,
     dynamic value,
-    bool valueString,
+    bool valueString = true,
   }) : this.build(
           parameterName,
           type: type,
@@ -85,7 +85,7 @@ class ParameterSpec<T> implements Spec {
         );
 
   String _getType() {
-    return type == null ? 'dynamic' : type.fullTypeName;
+    return type == null ? 'dynamic' : type!.fullTypeName;
   }
 
   String _valueString(dynamic v) => v is String && valueString ? '"$v"' : '$v';
@@ -110,7 +110,7 @@ class ParameterSpec<T> implements Spec {
   }
 }
 
-String collectParameters(List<ParameterSpec> parameters) {
+String collectParameters(List<ParameterSpec>? parameters) {
   if (parameters == null || parameters.isEmpty) return '';
   var normalList = parameters.where((o) => o.parameterMode == ParameterMode.normal);
   var namedList = parameters.where((o) => o.parameterMode == ParameterMode.named);

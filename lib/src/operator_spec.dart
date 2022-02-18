@@ -1,10 +1,10 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class OperatorSpec implements Spec {
-  String operator;
-  TypeToken returnType;
-  List<ParameterSpec> parameters = [];
-  CodeBlockSpec codeBlock;
+  final String operator;
+  final TypeToken returnType;
+  final List<ParameterSpec> parameters;
+  final CodeBlockSpec codeBlock;
 
   OperatorSpec.build(this.operator, this.returnType, this.parameters, this.codeBlock);
 

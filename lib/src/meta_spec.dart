@@ -1,16 +1,16 @@
 import 'package:dartpoet/dartpoet.dart';
 
 class MetaSpec implements Spec {
-  TypeToken typeToken;
-  List<ParameterSpec> parameters = [];
-  String instanceName;
-  bool isInstance = false;
+  final TypeToken? typeToken;
+  final List<ParameterSpec> parameters;
+  final String? instanceName;
+  final bool isInstance;
 
-  MetaSpec.ofInstance(this.instanceName) : isInstance = true;
+  MetaSpec.ofInstance(this.instanceName)
+      : isInstance = true, typeToken = null, parameters = const [];
 
-  MetaSpec.ofConstructor(this.typeToken, {List<ParameterSpec> parameters})
-    : isInstance = false,
-      parameters = parameters ?? [];
+  MetaSpec.ofConstructor(this.typeToken, { this.parameters = const [] })
+      : isInstance = false, instanceName = null;
 
   @override
   String code({Map<String, dynamic> args = const {}}) {
@@ -19,7 +19,7 @@ class MetaSpec implements Spec {
     } else {
       var list = parameters.where((o) => o.isValue).toList();
       list.sort((o1, o2) => o1.parameterMode.index - o2.parameterMode.index);
-      return "@${typeToken.fullTypeName}(${list.map((o) => o.code()).join(", ")})";
+      return "@${typeToken!.fullTypeName}(${list.map((o) => o.code()).join(", ")})";
     }
   }
 }

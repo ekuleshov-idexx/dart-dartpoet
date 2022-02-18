@@ -58,7 +58,7 @@ void main() {
         properties: [
           PropertySpec.of('students', type: TypeToken.ofListByToken(TypeToken.ofName('Student')), defaultValue: []),
           PropertySpec.of('studentScores', defaultValue: {'John': 100, 'Rek': 50}, type: TypeToken.ofMap<String, int>()),
-          PropertySpec.of('run', type: TypeToken.ofBool()),
+          PropertySpec.of('run', type: TypeToken.ofBool(true)),
         ],
         getters: [
           GetterSpec.build('studentCount', type: TypeToken.ofInt(), codeBlock: CodeBlockSpec.lines(['students.length;'])),
