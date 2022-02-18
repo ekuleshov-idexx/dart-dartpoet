@@ -3,6 +3,7 @@ import 'package:dartpoet/dartpoet.dart';
 class FileSpec implements Spec {
   final List<DependencySpec> dependencies;
   final List<ClassSpec> classes;
+  final List<EnumSpec> enums;
   final List<PropertySpec> properties;
   final List<GetterSpec> getters;
   final List<SetterSpec> setters;
@@ -12,6 +13,7 @@ class FileSpec implements Spec {
   FileSpec.build({
     List<MethodSpec>? methods,
     List<ClassSpec>? classes,
+    List<EnumSpec>? enums,
     List<PropertySpec>? properties,
     List<GetterSpec>? getters,
     List<SetterSpec>? setters,
@@ -20,46 +22,45 @@ class FileSpec implements Spec {
   }) :
     this.methods = methods ?? [],
     this.classes = classes ?? [],
+    this.enums = enums ?? [],
     this.properties = properties ?? [],
     this.getters = getters ?? [],
     this.setters = setters ?? [],
     this.codeBlocks = codeBlocks ?? [],
-    this.dependencies = dependencies ?? []
-  {
-    if (methods == null) methods = [];
-    if (classes == null) classes = [];
-    if (properties == null) properties = [];
-    if (getters == null) getters = [];
-    if (setters == null) setters = [];
-    if (codeBlocks == null) codeBlocks = [];
-    if (dependencies == null) dependencies = [];
-  }
+    this.dependencies = dependencies ?? [];
 
   @override
   String code({Map<String, dynamic> args = const {}}) {
     bool reverseClasses = args[KEY_REVERSE_CLASSES] ?? false;
-    if (reverseClasses) {
-      List<ClassSpec> reversed = classes.reversed.toList();
-      classes.clear();
-      classes.addAll(reversed);
-    }
+    List<ClassSpec> classes = reverseClasses ? this.classes.reversed.toList() : this.classes;
+
     StringBuffer inner = StringBuffer();
+
     String dependenciesBlock = collectDependencies(dependencies);
-    String classesBlock = collectClasses(classes);
-    String propertiesBlock = collectProperties(properties);
-    String gettersBlock = collectGetters(getters);
-    String settersBlock = collectSetters(setters);
-    String codeBlocksBlock = collectCodeBlocks(codeBlocks);
-    String methodsBlock = collectMethods(methods);
     if (dependenciesBlock.isNotEmpty) inner..writeln()..writeln(dependenciesBlock);
+
+    String propertiesBlock = collectProperties(properties);
     if (propertiesBlock.isNotEmpty) inner..writeln()..writeln(propertiesBlock);
+
+    String gettersBlock = collectGetters(getters);
     if (gettersBlock.isNotEmpty) inner..writeln()..writeln(gettersBlock);
+
+    String settersBlock = collectSetters(setters);
     if (settersBlock.isNotEmpty) inner..writeln()..writeln(settersBlock);
+
+    String codeBlocksBlock = collectCodeBlocks(codeBlocks);
     if (codeBlocksBlock.isNotEmpty) inner..writeln()..writeln(codeBlocksBlock);
+
+    String enumsBlock = collectEnums(enums);
+    if (enumsBlock.isNotEmpty) inner..writeln()..writeln(enumsBlock);
+
+    String classesBlock = collectClasses(classes);
     if (classesBlock.isNotEmpty) inner..writeln()..writeln(classesBlock);
+
+    String methodsBlock = collectMethods(methods);
     if (methodsBlock.isNotEmpty) inner..writeln()..writeln(methodsBlock);
-    String raw = inner.toString();
-    return raw;
+
+    return inner.toString();
   }
 }
 

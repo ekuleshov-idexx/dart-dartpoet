@@ -6,6 +6,7 @@ library dartpoet;
 import 'package:dart_style/dart_style.dart';
 
 export 'src/class_spec.dart';
+export 'src/enum_spec.dart';
 export 'src/code_block_spec.dart';
 export 'src/dart_file.dart';
 export 'src/doc_spec.dart';
